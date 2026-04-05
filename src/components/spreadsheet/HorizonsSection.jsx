@@ -21,6 +21,7 @@ export default function HorizonsSection({
   copyExpToFuture,
   remHz,
   addHz,
+  onSelectHz,
 }) {
   const [requestedId, setRequestedId] = useState(null);
   const [toast, setToast] = useState(null);
@@ -113,7 +114,7 @@ export default function HorizonsSection({
           {effectiveHz.map((h) => (
             <button
               key={h.id}
-              onClick={() => setActiveId(h.id)}
+              onClick={() => { setActiveId(h.id); onSelectHz?.(h.id); }}
               className={`border-none py-2.5 px-4 text-xs font-semibold cursor-pointer whitespace-nowrap transition-colors ${
                 h.id === activeId
                   ? "bg-surface text-text-bright"

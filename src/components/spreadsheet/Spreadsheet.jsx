@@ -13,6 +13,7 @@ export default function Spreadsheet({
   updLn, remLn, addLoan,
   updOO, remOO, addOO,
   updMS, remMS, addMS, addMSAt,
+  onSelectHz,
 }) {
   return (
     <div>
@@ -37,6 +38,7 @@ export default function Spreadsheet({
         copyExpToFuture={copyExpToFuture}
         remHz={remHz}
         addHz={addHz}
+        onSelectHz={onSelectHz}
       />
 
       <div className="mb-5 flex gap-2.5 items-center">

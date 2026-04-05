@@ -383,6 +383,7 @@ export default function BudgetApp({ onSignOut, userEmail }) {
           remMS={remMS}
           addMS={addMS}
           addMSAt={addMSAt}
+          onSelectHz={(id) => { setSelHz(horizons.length <= 1 ? [] : [id]); setSelM(null); }}
         />
       )}
     </div>
