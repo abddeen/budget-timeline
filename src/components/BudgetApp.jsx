@@ -237,43 +237,43 @@ export default function BudgetApp({ onSignOut, userEmail }) {
       <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={doImport} />
 
       {/* Header */}
-      <div className="mb-4 flex justify-between items-start flex-wrap gap-2">
-        <div>
-          <div className="text-lg font-bold text-text-bright mb-1.5">
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <div className="text-lg font-bold text-text-bright">
             Budget Timeline
           </div>
-          <div className="flex items-stretch gap-1.5 flex-wrap">
-            <button
-              onClick={() => { setSelHz([]); setSelM(null); }}
-              className={`border-none rounded-lg py-1.5 px-3 text-xs font-semibold cursor-pointer flex items-center justify-center ${
-                selHz.length === 0 ? 'bg-text-bright text-bg' : 'bg-surface-alt text-text-dim border border-border'
-              }`}
-            >
-              All
+          <div className="flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap">
+            <button onClick={doExport} className="text-[10px] text-text-dim bg-none border-none cursor-pointer hover:text-accent">↓ Export</button>
+            <button onClick={() => fileRef.current?.click()} className="text-[10px] text-text-dim bg-none border-none cursor-pointer hover:text-accent">↑ Import</button>
+            <span className="text-[10px] text-text-dim">{userEmail}</span>
+            <button onClick={onSignOut} className="text-[10px] text-text-dim bg-none border-none cursor-pointer hover:text-negative">
+              Sign out
             </button>
-            {effectiveHz.map((h) => (
-              <button
-                key={h.id}
-                onClick={() => toggleHz(h.id)}
-                className={`border-none rounded-lg py-1.5 px-3 text-xs font-semibold cursor-pointer text-left flex flex-col items-start gap-0.5 ${
-                  selHz.includes(h.id) ? 'bg-accent-dark text-accent-light' : 'bg-surface-alt text-text-dim border border-border'
-                }`}
-              >
-                <span>📅 {h.label}</span>
-                <span className="font-normal opacity-70 text-[10px] font-medium leading-tight">
-                  {fD(h.startDate)} – {fD(h.endDate)}
-                </span>
-              </button>
-            ))}
           </div>
         </div>
-        <div className="flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap">
-          <button onClick={doExport} className="text-[10px] text-text-dim bg-none border-none cursor-pointer hover:text-accent">↓ Export</button>
-          <button onClick={() => fileRef.current?.click()} className="text-[10px] text-text-dim bg-none border-none cursor-pointer hover:text-accent">↑ Import</button>
-          <span className="text-[10px] text-text-dim">{userEmail}</span>
-          <button onClick={onSignOut} className="text-[10px] text-text-dim bg-none border-none cursor-pointer hover:text-negative">
-            Sign out
+        <div className="flex items-stretch gap-1.5 flex-wrap">
+          <button
+            onClick={() => { setSelHz([]); setSelM(null); }}
+            className={`border-none rounded-lg py-1.5 px-3 text-xs font-semibold cursor-pointer flex items-center justify-center ${
+              selHz.length === 0 ? 'bg-text-bright text-bg' : 'bg-surface-alt text-text-dim border border-border'
+            }`}
+          >
+            All
           </button>
+          {effectiveHz.map((h) => (
+            <button
+              key={h.id}
+              onClick={() => toggleHz(h.id)}
+              className={`border-none rounded-lg py-1.5 px-3 text-xs font-semibold cursor-pointer text-left flex flex-col items-start gap-0.5 ${
+                selHz.includes(h.id) ? 'bg-accent-dark text-accent-light' : 'bg-surface-alt text-text-dim border border-border'
+              }`}
+            >
+              <span>📅 {h.label}</span>
+              <span className="font-normal opacity-70 text-[10px] font-medium leading-tight">
+                {fD(h.startDate)} – {fD(h.endDate)}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 

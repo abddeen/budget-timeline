@@ -1,7 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { fmt, fD } from '../../lib/constants';
 import MonthFilter from './MonthFilter';
 import TimelineEvent from './TimelineEvent';
+
+const PAGE_SIZE = 40;
 
 function groupEvents(rows) {
   const groups = [];
@@ -41,13 +43,36 @@ function groupEvents(rows) {
 
 export default function Timeline({ visible, activeM, selM, setSelM, mSum, exp, setExp, loans }) {
   const groups = useMemo(() => groupEvents(visible), [visible]);
+  const [limit, setLimit] = useState(PAGE_SIZE);
+
+  // Reset limit when filters change
+  const filterKey = selM ?? 'all';
+  const [prevKey, setPrevKey] = useState(filterKey);
+  if (filterKey !== prevKey) {
+    setPrevKey(filterKey);
+    setLimit(PAGE_SIZE);
+  }
+
+  const shown = groups.slice(0, limit);
+  const hasMore = groups.length > limit;
+
+  const sentinelRef = useRef(null);
+  useEffect(() => {
+    if (!hasMore || !sentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setLimit((l) => l + PAGE_SIZE); },
+      { rootMargin: '200px' },
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, limit]);
 
   return (
     <>
       <MonthFilter activeM={activeM} selM={selM} setSelM={setSelM} mSum={mSum} />
       <div className="relative">
         <div className="absolute left-[19px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-border to-surface-alt rounded-sm" />
-        {groups.map((g) =>
+        {shown.map((g) =>
           g.type === 'payday-group' ? (
             <PaydayGroup
               key={g.id}
@@ -66,6 +91,7 @@ export default function Timeline({ visible, activeM, selM, setSelM, mSum, exp, s
             />
           )
         )}
+        {hasMore && <div ref={sentinelRef} className="h-1" />}
       </div>
     </>
   );
