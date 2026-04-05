@@ -29,8 +29,8 @@ export const DEF_HORIZONS = [
 export const DEF_LAST_END = "2028-12-31";
 
 export const DEF_LOANS = [
-  { id: "mortgage", label: "Mortgage", amount: 1080000, startDate: "2026-05-15" },
-  { id: "abba", label: "Loan from Abba", amount: 135000, startDate: "2026-04-05" },
+  { id: "mortgage", label: "Mortgage", amount: 1080000, startDate: "2026-05-15", rate: 5.5 },
+  { id: "abba", label: "Loan from Abba", amount: 135000, startDate: "2026-04-05", rate: 0 },
 ];
 
 export const DEF_OO = [

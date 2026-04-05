@@ -63,15 +63,34 @@ export function genEvents(endDate, horizons, milestones) {
 
 export function compute(horizons, loans, allEvents, startingSavings) {
   const loanBals = {};
-  for (const l of loans) loanBals[l.id] = { balance: l.amount, started: false };
+  const loanRates = {};
+  for (const l of loans) {
+    loanBals[l.id] = { balance: l.amount, started: false };
+    loanRates[l.id] = (l.rate ?? 0) / 100; // annual rate as decimal
+  }
   let savings = startingSavings;
   const rows = [];
   const hzMap = {};
   for (const h of horizons) hzMap[h.id] = h;
 
+  // Track which months we've already accrued interest for each loan
+  const accruedMonths = {};
+  for (const l of loans) accruedMonths[l.id] = new Set();
+
   for (const ev of allEvents) {
     for (const l of loans)
       if (!loanBals[l.id].started && ev.date >= l.startDate) loanBals[l.id].started = true;
+
+    // Accrue monthly interest on loan balances at the start of each new month
+    const evMonth = ev.date.slice(0, 7); // "YYYY-MM"
+    for (const l of loans) {
+      if (loanRates[l.id] > 0 && loanBals[l.id].started && loanBals[l.id].balance > 0 && !accruedMonths[l.id].has(evMonth)) {
+        const monthlyRate = loanRates[l.id] / 12;
+        loanBals[l.id].balance += loanBals[l.id].balance * monthlyRate;
+      }
+      accruedMonths[l.id].add(evMonth);
+    }
+
     const hz = hzMap[ev.hzId] || horizons[0];
     let savDelta = 0,
       displayAmt = 0;

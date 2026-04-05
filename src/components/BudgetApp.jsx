@@ -132,7 +132,7 @@ export default function BudgetApp({ onSignOut, userEmail }) {
     };
     setHorizons((l) => [...l, newHz]);
   }, [effectiveHz, horizons]);
-  const addLoan = useCallback(() => setLoans((l) => [...l, { id: `ln-${Date.now()}`, label: "New Loan", amount: 0, startDate: START, isNew: true }]), []);
+  const addLoan = useCallback(() => setLoans((l) => [...l, { id: `ln-${Date.now()}`, label: "New Loan", amount: 0, startDate: START, rate: 0, isNew: true }]), []);
   const addOO = useCallback(() => setOneOffs((l) => [{ id: `oo-${Date.now()}`, date: "2026-06-15", label: "New event", type: "outflow", icon: "📌", amount: 0, critical: false, hidden: false, loanId: null, isNew: true }, ...l]), []);
   const addMS = useCallback(() => setMilestones((l) => [{ id: `ms-${Date.now()}`, date: "2026-06-15", label: "New milestone", icon: "⭐", isNew: true }, ...l]), []);
   const addMSAt = useCallback((date) => setMilestones((l) => [{ id: `ms-${Date.now()}`, date, label: "New milestone", icon: "⭐", isNew: true }, ...l]), []);
@@ -239,7 +239,7 @@ export default function BudgetApp({ onSignOut, userEmail }) {
       {/* Header */}
       <div className="mb-4 flex justify-between items-start flex-wrap gap-2">
         <div>
-          <div className="text-[11px] font-semibold tracking-[2px] uppercase text-text-muted mb-1.5">
+          <div className="text-lg font-bold text-text-bright mb-1.5">
             Budget Timeline
           </div>
           <div className="flex items-stretch gap-1.5 flex-wrap">
@@ -267,12 +267,7 @@ export default function BudgetApp({ onSignOut, userEmail }) {
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          {saveStatus && (
-            <span className="text-[10px] text-positive font-semibold py-1 px-2 bg-positive-bg rounded-md">
-              {saveStatus === "Saved" ? "✓ " : ""}{saveStatus}
-            </span>
-          )}
+        <div className="flex items-center gap-1.5 flex-shrink-0 whitespace-nowrap">
           <button onClick={doExport} className="text-[10px] text-text-dim bg-none border-none cursor-pointer hover:text-accent">↓ Export</button>
           <button onClick={() => fileRef.current?.click()} className="text-[10px] text-text-dim bg-none border-none cursor-pointer hover:text-accent">↑ Import</button>
           <span className="text-[10px] text-text-dim">{userEmail}</span>
@@ -323,18 +318,23 @@ export default function BudgetApp({ onSignOut, userEmail }) {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-0.5 mb-4 bg-surface-alt rounded-[10px] p-[3px] border border-border w-fit">
-        {["timeline", "spreadsheet"].map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`border-none rounded-lg py-[7px] px-[18px] text-xs font-semibold cursor-pointer capitalize ${
-              tab === t ? 'bg-text-bright text-bg' : 'bg-transparent text-text-dim'
-            }`}
-          >
-            {t}
-          </button>
-        ))}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="flex gap-0.5 bg-surface-alt rounded-[10px] p-[3px] border border-border w-fit">
+          {["timeline", "spreadsheet"].map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`border-none rounded-lg py-[7px] px-[18px] text-xs font-semibold cursor-pointer capitalize ${
+                tab === t ? 'bg-text-bright text-bg' : 'bg-transparent text-text-dim'
+              }`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+        <span className={`text-[10px] text-positive font-semibold py-1 px-2 bg-positive-bg rounded-md transition-opacity ${saveStatus ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+          {saveStatus === "Saved" ? "✓ " : ""}{saveStatus || "\u00A0"}
+        </span>
       </div>
 
       {/* Content */}
