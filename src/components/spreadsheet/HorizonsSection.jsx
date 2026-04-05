@@ -6,7 +6,7 @@ import EditDate from "../ui/EditDate";
 import EditCurrency from "../ui/EditCurrency";
 import Toggle from "../ui/Toggle";
 import TableHeader from "../ui/TableHeader";
-import { fD } from "../../lib/constants";
+import { fD, fmt } from "../../lib/constants";
 
 export default function HorizonsSection({
   horizons,
@@ -25,13 +25,18 @@ export default function HorizonsSection({
   const [requestedId, setRequestedId] = useState(null);
   const [toast, setToast] = useState(null);
 
-  // Derive activeId: prefer newly added horizon, then requested, then first
+  // Derive activeId: requested tab, or first horizon as fallback
+  const activeId = effectiveHz.find((h) => h.id === requestedId)
+    ? requestedId
+    : effectiveHz[0]?.id;
+
+  // Auto-switch to newly added horizon, then clear isNew
   const newest = horizons.find((h) => h.isNew);
-  const activeId = newest
-    ? newest.id
-    : effectiveHz.find((h) => h.id === requestedId)
-      ? requestedId
-      : effectiveHz[0]?.id;
+  if (newest) {
+    if (requestedId !== newest.id) setRequestedId(newest.id);
+    updHzField(newest.id, "isNew", false);
+  }
+
   const setActiveId = setRequestedId;
 
   const showToast = useCallback((msg) => {
@@ -294,9 +299,38 @@ export default function HorizonsSection({
               ))}
             </tbody>
           </table>
-          {sortedExpenses.length === 0 && (
+          {sortedExpenses.length === 0 ? (
             <div className="p-4 text-text-dim text-xs text-center">
               No expenses in this horizon.
+            </div>
+          ) : (
+            <div className="py-2.5 px-4 border-t border-border-light flex justify-between items-center text-xs">
+              <div className="flex gap-4">
+                <span className="text-text-muted">
+                  Income: <span className="font-mono text-positive font-semibold">{fmt(hz.income)}</span>
+                </span>
+                <span className="text-text-muted">
+                  Expenses: <span className="font-mono text-negative font-semibold">
+                    {fmt((hz.expenses || []).filter((e) => !e.hidden).reduce((s, e) => {
+                      const scale = e.frequency === "fortnightly" ? 1 : e.frequency === "monthly" ? 14 / 30.44 : 14 / 91.31;
+                      return s + e.amount * scale;
+                    }, 0))}
+                  </span>
+                  <span className="text-text-dim"> /fn</span>
+                </span>
+              </div>
+              {(() => {
+                const totalExp = (hz.expenses || []).filter((e) => !e.hidden).reduce((s, e) => {
+                  const scale = e.frequency === "fortnightly" ? 1 : e.frequency === "monthly" ? 14 / 30.44 : 14 / 91.31;
+                  return s + e.amount * scale;
+                }, 0);
+                const net = hz.income - hz.buffer - totalExp;
+                return (
+                  <span className={`font-mono font-bold ${net >= 0 ? 'text-positive' : 'text-negative'}`}>
+                    {net >= 0 ? '+' : ''}{fmt(net)} /fn
+                  </span>
+                );
+              })()}
             </div>
           )}
         </>

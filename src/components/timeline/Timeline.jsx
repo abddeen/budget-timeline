@@ -18,12 +18,10 @@ function groupEvents(rows) {
       }
       if (expenses.length > 0) {
         const lastExp = expenses[expenses.length - 1];
-        const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
         groups.push({
           type: 'payday-group',
           salary: r,
           expenses,
-          totalExpenses,
           finalSavings: lastExp.savings,
           finalLoans: lastExp.loans,
           id: r.id,
@@ -74,9 +72,10 @@ export default function Timeline({ visible, activeM, selM, setSelM, mSum, exp, s
 }
 
 function PaydayGroup({ group, isExpanded, onToggle, loans }) {
-  const { salary, expenses, totalExpenses, finalSavings, finalLoans } = group;
+  const { salary, expenses, finalSavings, finalLoans } = group;
   const neg = finalSavings < 0;
-  const net = salary.displayAmt - totalExpenses;
+  const net = salary.savDelta + expenses.reduce((s, e) => s + e.savDelta, 0);
+  const buffer = salary.displayAmt - salary.savDelta;
 
   return (
     <div
@@ -114,6 +113,12 @@ function PaydayGroup({ group, isExpanded, onToggle, loans }) {
               <span className="text-positive">Income</span>
               <span className="font-mono text-positive">+{fmt(salary.displayAmt)}</span>
             </div>
+            {buffer > 0 && (
+              <div className="flex justify-between text-[11px] py-0.5">
+                <span className="text-warning">Buffer</span>
+                <span className="font-mono text-warning">-{fmt(buffer)}</span>
+              </div>
+            )}
             {expenses.map((ex) => (
               <div key={ex.id} className="flex justify-between text-[11px] py-0.5">
                 <span className="text-text-muted">

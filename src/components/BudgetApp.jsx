@@ -45,11 +45,18 @@ export default function BudgetApp({ onSignOut, userEmail }) {
 
   const toggleHz = useCallback((id) => {
     setSelHz((prev) => {
-      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
-      return next.length === horizons.length ? [] : next;
+      const toggled = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      if (toggled.length <= 1) return toggled.length === horizons.length ? [] : toggled;
+      // Fill gaps: select all horizons between the first and last selected
+      const hzIds = effectiveHz.map((h) => h.id);
+      const indices = toggled.map((tid) => hzIds.indexOf(tid)).filter((i) => i !== -1);
+      const min = Math.min(...indices);
+      const max = Math.max(...indices);
+      const filled = hzIds.slice(min, max + 1);
+      return filled.length === horizons.length ? [] : filled;
     });
     setSelM(null);
-  }, [horizons.length]);
+  }, [horizons.length, effectiveHz]);
 
   // If all selected horizons are deleted, reset to all
   useEffect(() => {

@@ -19,7 +19,7 @@ export default function LoansSection({ loans, lastRow, updLn, remLn, addLoan }) 
               <TableHeader>Label</TableHeader>
               <TableHeader right>Amount</TableHeader>
               <TableHeader>Starts</TableHeader>
-              <TableHeader right>Current</TableHeader>
+              <TableHeader right>End of Horizon</TableHeader>
               <TableHeader></TableHeader>
             </tr>
           </thead>
