@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'DM Sans', 'Segoe UI', sans-serif;
+
+  --color-bg: #0a0a0a;
+  --color-surface: #0f0f0f;
+  --color-surface-alt: #141414;
+  --color-surface-hover: #1a1a1a;
+  --color-border: #262626;
+  --color-border-light: #1a1a1a;
+  --color-border-dark: #333;
+  --color-text: #e5e5e5;
+  --color-text-muted: #737373;
+  --color-text-dim: #525252;
+  --color-text-bright: #fafafa;
+  --color-accent: #3b82f6;
+  --color-accent-light: #60a5fa;
+  --color-accent-dark: #172554;
+  --color-accent-border: #1e3a8a;
+  --color-positive: #34d399;
+  --color-positive-dark: #059669;
+  --color-positive-bg: #052e16;
+  --color-positive-deep: #0d3320;
+  --color-positive-border: #065f46;
+  --color-negative: #f87171;
+  --color-negative-light: #fca5a5;
+  --color-negative-dark: #dc2626;
+  --color-negative-bg: #450a0a;
+  --color-negative-deep: #7f1d1d;
+  --color-shortfall-bg: #1f0a0a;
+  --color-shortfall-border: #2a1215;
+  --color-warning: #fbbf24;
+  --color-warning-bg: #422006;
+  --color-warning-border: #1c1917;
+  --color-orange: #fb923c;
+  --color-purple: #a78bfa;
+  --color-purple-dark: #3730a3;
+  --color-purple-bg: #3b0764;
+  --color-muted: #a3a3a3;
+  --color-input-bg: #1a1a1a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
